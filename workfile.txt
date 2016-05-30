@@ -1,0 +1,6 @@
+1st line of workfile.txt
+2nd line of workfile.txt
+4th line of workfile.txt
+5th line of workfile.txt
+6th line of workfile.txt
+7th line of workfile.txt

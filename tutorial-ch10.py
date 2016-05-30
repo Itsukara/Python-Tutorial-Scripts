@@ -1,0 +1,148 @@
+# coding: UTF-8
+# http://docs.python.jp/2.7/tutorial/introduction.html
+# 形式ばらない Python の紹介
+from print_and_exec import *
+
+
+
+nprint_and_exec(ur'''
+"■OSへのインタフェース"
+import os
+print os.getcwd()
+os.system('mkdir 00WORK')
+print os.chdir('00WORK')
+print os.getcwd()
+os.chdir("..")
+os.system('rmdir 00WORK')
+
+dir(os)
+# help(os)
+
+import shutil
+shutil.copyfile("TEMPDATA", "TEMPDATA2")
+shutil.move("TEMPDATA2", "TEMP0002")
+
+import glob
+temps = glob.glob("TEMP*")
+print temps
+os.system('del TEMP0002')
+temps = glob.glob("TEMP*")
+print temps
+
+import sys
+print sys.argv
+''')
+
+
+
+print_and_exec(ur'''
+"■文字列のパターンマッチング"
+import re
+print re.findall(r'\bf[a-z]*', 'which foot or hand fell fastest')
+print re.sub(r'(\b[a-z]+) \1', r'\1', 'cat in the the hat')
+''')
+
+
+
+print_and_exec(ur'''
+"■数学"
+import math
+print math.cos(math.pi / 4.0)
+print math.log(1024, 2)
+
+import random
+print random.choice(['apple', 'pear', 'banana'])
+print random.sample(xrange(100), 10)   # sampling without replacement
+print random.random()    # random float
+print random.randrange(6)  # random integer chosen from range(6)
+''')
+
+
+
+nprint_and_exec(ur'''
+"■インターネットへのアクセス"
+import urllib2
+for line in urllib2.urlopen('https://httpd.apache.org/docs/2.4/new_features_2_4.html'):
+  if '2.4.' in line :
+    print line
+
+# ERROR
+#import smtplib
+#server = smtplib.SMTP('localhost')
+#server.sendmail('iitt21-all@yahoo.co.jp', 'iitt21-all@yahoo.co.jp',
+#"""To: anonymous@yahoo.co.jp
+#From: nobody@yahoo.co.jp
+#
+#Beware the Ides of March.
+#""")
+#server.quit()
+''')
+
+
+
+print_and_exec(ur'''
+"■日付と時刻"
+from datetime import date
+now = date.today()
+print now
+print now.strftime("%m-%d-%y. %d %b %Y is a %A on the %d day of %B.")
+
+# dates support calendar arithmetic
+birthday = date(1961, 2, 5)
+age = now - birthday
+print age.days
+''')
+
+
+
+print_and_exec(ur'''
+"■データ圧縮"
+import zlib
+s = 'witch which has which witches wrist watch'
+print len(s)
+t = zlib.compress(s)
+print len(t)
+
+print zlib.decompress(t)
+print "crc32={:08x}".format(zlib.crc32(s))
+''')
+
+
+
+print_and_exec(u'''
+"■パフォーマンスの計測"
+from timeit import Timer
+print Timer('t=a; a=b; b=t', 'a=1; b=2').timeit()
+print Timer('a,b = b,a', 'a=1; b=2').timeit()
+''')
+
+
+
+print_and_exec(u'''
+"■品質管理"
+def average(values):
+    """Computes the arithmetic mean of a list of numbers.
+
+    >>> print average([20, 30, 70])
+    40.0
+    """
+    return sum(values, 0.0) / len(values)
+
+import doctest
+print doctest.testmod()   # automatically validate the embedded tests
+print
+
+
+import unittest
+class TestStatisticalFunctions(unittest.TestCase):
+    def test_average(self):
+        self.assertEqual(average([20, 30, 70]), 40.0)
+        self.assertEqual(round(average([1, 5, 7]), 1), 4.3)
+        with self.assertRaises(ZeroDivisionError):
+            average([])
+        with self.assertRaises(TypeError):
+            average(20, 30, 70)
+
+print unittest.main() # Calling from the command line invokes all tests
+''')
+
