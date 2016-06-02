@@ -1,34 +1,58 @@
 # coding: UTF-8
-# http://docs.python.jp/2.7/tutorial/introduction.html
-# 形式ばらない Python の紹介
+# http://docs.python.jp/2.7/tutorial/stdlib.html
+# 10. 標準ライブラリミニツアー
 from print_and_exec import *
 
 
 
 nprint_and_exec(ur'''
-"■OSへのインタフェース"
+"■10.1. OSへのインタフェース -1"
 import os
 print os.getcwd()
-os.system('mkdir 00WORK')
-print os.chdir('00WORK')
-print os.getcwd()
-os.chdir("..")
-os.system('rmdir 00WORK')
 
-dir(os)
-# help(os)
+os.system('mkdir today')
+print os.chdir('today')
+''')
 
+
+
+nprint_and_exec(ur'''
+"■10.1. OSへのインタフェース -2"
+import os
+print dir(os)
+
+help(os)
+''')
+
+
+
+nprint_and_exec(ur'''
+"■10.1. OSへのインタフェース -3"
 import shutil
-shutil.copyfile("TEMPDATA", "TEMPDATA2")
-shutil.move("TEMPDATA2", "TEMP0002")
 
+shutil.copyfile(r'..\data.db', 'archive.db')
+shutil.move('archive.db', 'move.db')
+
+os.system('dir move.db')
+
+# cleanup
+os.system('del move.db')
+os.chdir("..")
+os.system('rmdir today')
+''')
+
+
+
+print_and_exec(ur'''
+"■10.2. ファイルのワイルドカード表記"
 import glob
-temps = glob.glob("TEMP*")
-print temps
-os.system('del TEMP0002')
-temps = glob.glob("TEMP*")
-print temps
+print glob.glob("*.py")
+''')
 
+
+
+print_and_exec(ur'''
+"■10.3. コマンドライン引数"
 import sys
 print sys.argv
 ''')
@@ -36,31 +60,45 @@ print sys.argv
 
 
 print_and_exec(ur'''
-"■文字列のパターンマッチング"
-import re
-print re.findall(r'\bf[a-z]*', 'which foot or hand fell fastest')
-print re.sub(r'(\b[a-z]+) \1', r'\1', 'cat in the the hat')
+"■10.4. エラー出力のリダイレクトとプログラムの終了"
+sys.stderr.write('Warning, log file not found starting a new one\n')
 ''')
 
 
 
 print_and_exec(ur'''
-"■数学"
+"■0.5. 文字列のパターンマッチング"
+import re
+print re.findall(r'\bf[a-z]*', 'which foot or hand fell fastest')
+print re.sub(r'(\b[a-z]+) \1', r'\1', 'cat in the the hat')
+print 'tea for too'.replace('too', 'two')
+''')
+
+
+
+print_and_exec(ur'''
+"■10.6. 数学 - 1"
 import math
 print math.cos(math.pi / 4.0)
 print math.log(1024, 2)
 
+''')
+
+
+
+print_and_exec(ur'''
+"■10.6. 数学 - 2"
 import random
 print random.choice(['apple', 'pear', 'banana'])
 print random.sample(xrange(100), 10)   # sampling without replacement
-print random.random()    # random float
-print random.randrange(6)  # random integer chosen from range(6)
+print random.random()                  # random float
+print random.randrange(6)              # random integer chosen from range(6)
 ''')
 
 
 
 nprint_and_exec(ur'''
-"■インターネットへのアクセス"
+"■10.7. インターネットへのアクセス"
 import urllib2
 for line in urllib2.urlopen('https://httpd.apache.org/docs/2.4/new_features_2_4.html'):
   if '2.4.' in line :
@@ -81,7 +119,7 @@ for line in urllib2.urlopen('https://httpd.apache.org/docs/2.4/new_features_2_4.
 
 
 print_and_exec(ur'''
-"■日付と時刻"
+"■10.8. 日付と時刻"
 from datetime import date
 now = date.today()
 print now
@@ -96,7 +134,7 @@ print age.days
 
 
 print_and_exec(ur'''
-"■データ圧縮"
+"■10.9. データ圧縮"
 import zlib
 s = 'witch which has which witches wrist watch'
 print len(s)
@@ -110,16 +148,24 @@ print "crc32={:08x}".format(zlib.crc32(s))
 
 
 print_and_exec(u'''
-"■パフォーマンスの計測"
+"■10.10. パフォーマンスの計測"
 from timeit import Timer
 print Timer('t=a; a=b; b=t', 'a=1; b=2').timeit()
 print Timer('a,b = b,a', 'a=1; b=2').timeit()
+print
+
+print Timer('sum([i*i for i in range(1, 10)])').timeit()
+print Timer("""
+sum = 0
+for i in range(1, 10):
+  sum += i*i
+""").timeit()
 ''')
 
 
 
 print_and_exec(u'''
-"■品質管理"
+"■10.11. 品質管理 - 1"
 def average(values):
     """Computes the arithmetic mean of a list of numbers.
 
@@ -130,19 +176,16 @@ def average(values):
 
 import doctest
 print doctest.testmod()   # automatically validate the embedded tests
-print
+''')
 
 
-import unittest
-class TestStatisticalFunctions(unittest.TestCase):
-    def test_average(self):
-        self.assertEqual(average([20, 30, 70]), 40.0)
-        self.assertEqual(round(average([1, 5, 7]), 1), 4.3)
-        with self.assertRaises(ZeroDivisionError):
-            average([])
-        with self.assertRaises(TypeError):
-            average(20, 30, 70)
 
-print unittest.main() # Calling from the command line invokes all tests
+print_and_exec(u'''
+"■10.11. 品質管理 - 2"
+import os
+
+os.system("type average.py")
+
+os.system("python average.py")
 ''')
 

@@ -1,4 +1,4 @@
-print "wavread imported"
+print "sound.formats.wavread.py imported"
 
 def readall():
   return "data in all files"

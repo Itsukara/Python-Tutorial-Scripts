@@ -1,4 +1,4 @@
-print "auread imported"
+print "sound.formats.auread.py imported"
 
 def readall():
   return "data in all files"

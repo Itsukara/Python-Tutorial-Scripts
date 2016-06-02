@@ -1,38 +1,321 @@
 # coding: UTF-8
-# http://docs.python.jp/2.7/tutorial/introduction.html
-# 形式ばらない Python の紹介
+# http://docs.python.jp/2.7/tutorial/classes.html
+# 9. クラス
 from print_and_exec import *
 
 
+
+
+
 print_and_exec(ur'''
-"■Namespace"
-v = 100
-w = 200
-x = [300]
-def func(a = v, b = x):
-  global w
-  # print v # Error: local variable 'v' referenced before assignment
-  v = 10
-  if a == 150:
-    w = 20
-  print "a={:<5d}, b={:6s}, v={:<5d}, w={:<5d}, x={:6s}".format(a, b, v, w, x)
+"■9.3.2. クラスオブジェクト - 1"
+class MyClass:
+    """A simple example class"""
+    def __init__(self):
+      self.data = []
+    
+    i = 12345
+    def f(self):
+        return 'hello world'
 
-func()
+x = MyClass()
 
-v = 1000
-func(150)
-
-w = 2000
-func()
-
-x[0] = 3000
-func()
+print x.data
+print x.i
+print x.f()
 ''')
 
 
 
 print_and_exec(ur'''
-"■Class Intro"
+"■9.3.2. クラスオブジェクト - 2"
+class Complex:
+    def __init__(self, realpart, imagpart):
+        self.r = realpart
+        self.i = imagpart
+
+x = Complex(3.0, -4.5)
+print x.r, x.i
+''')
+
+
+
+print_and_exec(ur'''
+"■9.3.3. インスタンスオブジェクト"
+x.counter = 1
+while x.counter < 10:
+    x.counter = x.counter * 2
+print x.counter
+del x.counter
+''')
+
+
+
+print_and_exec(ur'''
+"■9.3.4. メソッドオブジェクト - 1"
+print x.f()
+''')
+
+
+
+print_and_exec(ur'''
+"■9.3.4. メソッドオブジェクト - 2"
+xf = x.f
+#while True:
+for i in range(1, 5):
+    print xf()
+''')
+
+print_and_exec(ur'''
+"■9.3.5. クラスとインスタンス変数 - 1"
+class Dog:
+
+    kind = 'canine'         # class variable shared by all instances
+
+    def __init__(self, name):
+        self.name = name    # instance variable unique to each instance
+
+d = Dog('Fido')
+e = Dog('Buddy')
+print d.kind                  # shared by all dogs
+print e.kind                  # shared by all dogs
+print d.name                  # unique to d
+print e.name                  # unique to e
+''')
+
+
+print_and_exec(ur'''
+"■9.3.5. クラスとインスタンス変数 - 2"
+class Dog:
+
+    tricks = []             # mistaken use of a class variable
+
+    def __init__(self, name):
+        self.name = name
+
+    def add_trick(self, trick):
+        self.tricks.append(trick)
+
+d = Dog('Fido')
+e = Dog('Buddy')
+d.add_trick('roll over')
+e.add_trick('play dead')
+print d.tricks                # unexpectedly shared by all dogs
+''')
+
+
+print_and_exec(ur'''
+"■9.3.5. クラスとインスタンス変数 - 3"
+class Dog:
+
+    def __init__(self, name):
+        self.name = name
+        self.tricks = []    # creates a new empty list for each dog
+
+    def add_trick(self, trick):
+        self.tricks.append(trick)
+
+d = Dog('Fido')
+e = Dog('Buddy')
+d.add_trick('roll over')
+e.add_trick('play dead')
+print d.tricks
+print e.tricks
+''')
+
+
+print_and_exec(ur'''
+"■9.4. いろいろな注意点 -1"
+# Function defined outside the class
+def f1(self, x, y):
+    return min(x, x+y)
+
+class C:
+    f = f1
+    def g(self):
+        return 'hello world'
+    h = g
+''')
+
+
+print_and_exec(ur'''
+"■9.4. いろいろな注意点 -2"
+class Bag:
+    def __init__(self):
+        self.data = []
+    def add(self, x):
+        self.data.append(x)
+    def addtwice(self, x):
+        self.add(x)
+        self.add(x)
+''')
+
+
+print_and_exec(ur'''
+"■9.6. プライベート変数とクラスローカルな参照"
+class Mapping:
+    def __init__(self, iterable):
+        self.items_list = []
+        self.__update(iterable)
+
+    def update(self, iterable):
+        for item in iterable:
+            self.items_list.append(item)
+
+    __update = update   # private copy of original update() method
+
+class MappingSubclass(Mapping):
+
+    def update(self, keys, values):
+        # provides new signature for update()
+        # but does not break __init__()
+        for item in zip(keys, values):
+            self.items_list.append(item)
+''')
+
+
+print_and_exec(ur'''
+"■9.7. 残りのはしばし"
+class Employee:
+    pass
+
+john = Employee() # Create an empty employee record
+
+# Fill the fields of the record
+john.name = 'John Doe'
+john.dept = 'computer lab'
+john.salary = 1000
+''')
+
+
+print_and_exec(ur'''
+"■9.8. 例外はクラスであってもよい"
+class B:
+    pass
+class C(B):
+    pass
+class D(C):
+    pass
+
+for c in [B, C, D]:
+    try:
+        raise c()
+    except D:
+        print "D"
+    except C:
+        print "C"
+    except B:
+        print "B"
+''')
+
+
+print_and_exec(ur'''
+"■9.9. イテレータ (iterator) - 1"
+for element in [1, 2, 3]:
+    print element
+for element in (1, 2, 3):
+    print element
+for key in {'one':1, 'two':2}:
+    print key
+for char in "123":
+    print char
+for line in open("myfile.txt"):
+    print line,
+''')
+
+
+print_and_exec(ur'''
+"■9.9. イテレータ (iterator) - 2"
+s = 'abc'
+it = iter(s)
+print it
+print it.next()
+print it.next()
+print it.next()
+print it.next()
+''')
+
+
+print_and_exec(ur'''
+"■9.9. イテレータ (iterator) - 3"
+class Reverse:
+    """Iterator for looping over a sequence backwards."""
+    def __init__(self, data):
+        self.data = data
+        self.index = len(data)
+    def __iter__(self):
+        return self
+    def next(self):
+        if self.index == 0:
+            raise StopIteration
+        self.index = self.index - 1
+        return self.data[self.index]
+
+rev = Reverse('spam')
+print iter(rev)
+for char in rev:
+    print char
+''')
+
+
+print_and_exec(ur'''
+"■9.10. ジェネレータ (generator)"
+def reverse(data):
+    for index in range(len(data)-1, -1, -1):
+        yield data[index]
+
+for char in reverse('golf'):
+    print char
+''')
+
+
+print_and_exec(ur'''
+"■9.11. ジェネレータ式"
+print sum(i*i for i in range(10))                 # sum of squares
+print
+
+xvec = [10, 20, 30]
+yvec = [7, 5, 3]
+print sum(x*y for x,y in zip(xvec, yvec))         # dot product
+print
+
+from math import pi, sin
+#sine_table = dict((x, sin(x*pi/180)) for x in range(0, 91))
+sine_table = dict((x, sin(x*pi/180)) for x in range(0, 10))
+print sine_table
+print
+
+text = """
+Some simple generators can be coded succinctly as expressions 
+using a syntax similar to list comprehensions but with parentheses 
+instead of brackets. These expressions are designed for situations 
+where the generator is used right away by an enclosing function. 
+Generator expressions are more compact but less versatile than 
+full generator definitions and tend to be more memory friendly 
+than equivalent list comprehensions.
+"""
+page = text.split("\n")
+unique_words = set(word  for line in page  for word in line.split())
+print unique_words
+print
+
+class Student():
+  def __init__(self, name, gpa):
+    self.name = name
+    self.gpa  = gpa
+graduates = [Student("Tom", 3.5), Student("John", 2.8), Student("Ted", 4.5)] 
+valedictorian = max((student.gpa, student.name) for student in graduates)
+print valedictorian
+print
+
+data = 'golf'
+print list(data[i] for i in range(len(data)-1,-1,-1))
+''')
+
+
+
+print_and_exec(ur'''
+"■おまけ Complexクラスを作っていろいろ試す"
 # 下記で"object"が抜けると旧classになり、下記のエラーが出る
 #   TypeError: must be type, not classobj
 class Complex(object):
@@ -74,7 +357,7 @@ try_exec("c1.add(1.0)") # TypeError
 
 
 print_and_exec(ur'''
-"■Inheritance"
+"■おまけ Complexクラスを継承するIntComplexクラスを作っていろいろ試す"
 class IntComplex(Complex):
   def __init__(self, realpart, imagpart):
     if not isinstance(realpart, int) or not isinstance(imagpart, int) :
@@ -114,7 +397,7 @@ try_exec("ca2 = c1.add(cr)") # TypeError
 
 
 print_and_exec(ur'''
-"■Inheritance Basics"
+"■おまけ インスタンス変数とクラス変数が交差するとき"
 """
 ・「self.変数名」に代入するとインスタンス変数が作成される
 ・インスタンス変数作成前は「self.変数名」はクラス変数を参照
@@ -126,6 +409,8 @@ print_and_exec(ur'''
  (a)クラス変数とインスタンス変数は異なった名称を使うのが良い
  (b)クラス変数は(1)でアクセスするのが良い
  (c)インスタンス変数は(3)でアクセスするのが良い
+
+・以下で、インスタンス変数とクラス変数の関係を確認する
 """
 class A(object):
   myname = "A"
@@ -214,10 +499,10 @@ D(); print
 
 
 print_and_exec(ur'''
-"■Private Variables and Class-local References"
+"■9.6. プライベート変数とクラスローカルな参照 再確認"
 """
-オブジェクトの中からしかアクセス出来ない
-“プライベート” インスタンス変数は、 Python にはありません。
+オブジェクトの中からしかアクセス出来ない“プライベート”インスタンス変数は、
+Python にはありません。
 しかし、ほとんどの Python コードが従っている慣習があります。
 アンダースコアで始まる名前 (例えば _spam) は、
  (関数であれメソッドであれデータメンバであれ) 
@@ -254,6 +539,7 @@ class D(A):
     print "D.__init__"
   def update(self): # does not break __init__()
     print "B.update"
+
 x = D()
 x.update()
 
@@ -273,7 +559,7 @@ x.update()
 
 
 print_and_exec(ur'''
-"■Odds and Ends"
+"■9.7. 残りのはしばし 再確認"
 """
 Pascal の “レコード (record)” や、
 C 言語の “構造体 (struct)” のような、
@@ -360,42 +646,3 @@ print
 if hdec: print "TRUE" # Human.__nonzero__が未定義なので必ずTrue
 ''')
 
-
-
-print_and_exec(ur'''
-"■Generator"
-def reverse(data):
-    for index in range(len(data)-1, -1, -1):
-        yield data[index]
-
-for char in reverse('Abracadabra'):
-    print char,
-print
-print
-
-print sum(i*i for i in range(10))   
-print
-
-xvec = [10, 20, 30]
-yvec = [7, 5, 3]
-print sum(x*y for x,y in zip(xvec, yvec)) 
-print
-
-from math import pi, sin
-sine_table = dict((x, sin(x*pi/180)) for x in range(0, 91, 10))
-print sine_table
-print
-
-text = """
-Some simple generators can be coded succinctly as expressions 
-using a syntax similar to list comprehensions but with parentheses 
-instead of brackets. These expressions are designed for situations 
-where the generator is used right away by an enclosing function. 
-Generator expressions are more compact but less versatile than 
-full generator definitions and tend to be more memory friendly 
-than equivalent list comprehensions.
-"""
-page = text.split("\n")
-unique_words = set(word  for line in page  for word in line.split())
-print unique_words
-''')

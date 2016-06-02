@@ -13,9 +13,12 @@ def print_and_exec(script):
   print ur"【スクリプト】",
   print script
   print ur"【実行結果】"
-  global_env = globals()
-  global_env['try_exec'] = try_exec;
-  exec script in global_env # globals()を付けないとch9は動かない
+  try:
+    exec script in globals() # globals()を付けないとch9は動かない
+  except Exception as e: 
+    print "Error: " + str(e)
+  except BaseException as e: 
+    print "Error: " + str(e)
 
 def nprint_and_exec(script):
   pass
@@ -23,8 +26,6 @@ def nprint_and_exec(script):
 def print_usage():
   print ur"""
 from print_and_exec import *
-
-
 
 print_and_exec(ur'''
 "■ヘッダー"
